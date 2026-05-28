@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Study Resource Sharing Platform</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f2f5f7;
+    color:#222;
+}
+
+/* LOGIN PAGE */
+#loginPage{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#2c6e7f,#245866);
+}
+
+.login-box{
+    width:340px;
+    background:white;
+    padding:35px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 4px 15px rgba(0,0,0,0.2);
+}
+
+.login-box h2{
+    margin-bottom:20px;
+    color:#2c6e7f;
+}
+
+.login-box input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:1px solid #aaa;
+    border-radius:5px;
+}
+
+.login-box button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    border:none;
+    background:#2c6e7f;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+/* HEADER */
+header{
+    background:#2c6e7f;
+    color:white;
+    padding:18px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+header h1{
+    font-size:24px;
+}
+
+/* PROFILE */
+.profile-container{
+    position:relative;
+}
+
+.profile-icon{
+    width:45px;
+    height:45px;
+    background:white;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.profile-icon:hover{
+    transform:scale(1.05);
+}
+
+.human-logo{
+    position:relative;
+    width:18px;
+    height:18px;
+}
+
+.human-logo::before{
+    content:"";
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#2c6e7f;
+    border-radius:50%;
+    top:0;
+    left:5px;
+}
+
+.human-logo::after{
+    content:"";
+    position:absolute;
+    width:16px;
+    height:10px;
+    background:#2c6e7f;
+    border-radius:10px;
+    bottom:0;
+    left:1px;
+}
+
+/* PROFILE DROPDOWN */
+.profile-box{
+    position:absolute;
+    top:55px;
+    right:0;
+    width:140px;
+    background:white;
+    border-radius:8px;
+    box-shadow:0 3px 12px rgba(0,0,0,0.2);
+    opacity:0;
+    visibility:hidden;
+    transition:0.2s;
+    z-index:1000;
+}
+
+.profile-container:hover .profile-box{
+    opacity:1;
+    visibility:visible;
+}
+
+.profile-box p{
+    padding:12px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:bold;
+    color:#222;
+}
+
+.profile-box p:hover{
+    background:#f2f2f2;
+    border-radius:8px;
+}
+
+/* PROFILE PAGE */
+#profilePage{
+    display:none;
+    min-height:100vh;
+    background:#f2f5f7;
+    padding:40px 20px;
+}
+
+.profile-page-box{
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 3px 12px rgba(0,0,0,0.15);
+}
+
+.profile-page-box h2{
+    color:#2c6e7f;
+    margin-bottom:25px;
+    text-align:center;
+}
+
+.profile-info{
+    margin-top:20px;
+}
+
+.profile-info p{
+    margin-top:18px;
+    font-size:18px;
+}
+
+/* CHANGE PASSWORD BOX */
+#changePasswordSection{
+    display:none;
+    margin-top:25px;
+    border-top:1px solid #ddd;
+    padding-top:20px;
+}
+
+.profile-page-box input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:1px solid #aaa;
+    border-radius:5px;
+}
+
+.profile-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.profile-buttons button{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:5px;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.change-btn{
+    background:#2980b9;
+}
+
+.save-password-btn{
+    background:#27ae60;
+}
+
+.back-profile-btn{
+    background:#e67e22;
+}
+
+.logout-btn{
+    background:#c0392b;
+    margin-top:15px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:5px;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+}
+
+/* NAV */
+nav{
+    background:#1f4f5c;
+    text-align:center;
+    padding:12px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+/* MAIN */
+main{
+    width:85%;
+    max-width:950px;
+    margin:20px auto;
+}
+
+/* SEARCH */
+.search-section{
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    margin-bottom:20px;
+    border:1px solid #ddd;
+}
+
+.search-section input{
+    width:100%;
+    padding:12px;
+    border:1px solid #aaa;
+    border-radius:5px;
+}
+
+/* BOX */
+.box{
+    background:white;
+    padding:22px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+/* RESOURCE CARD */
+.resource-card{
+    position:relative;
+    border:1px solid #ccc;
+    padding:15px;
+    margin-top:15px;
+    border-radius:6px;
+    background:#fafafa;
+}
+
+.resource-card h3{
+    color:#2c6e7f;
+    margin-bottom:10px;
+}
+
+.resource-card p{
+    margin-top:8px;
+}
+
+/* BUTTONS */
+.action-buttons{
+    margin-top:15px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.open-btn,
+.download-btn,
+.view-btn,
+.back-btn,
+.edit-btn,
+.save-btn{
+    padding:10px 15px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    color:white;
+}
+
+.open-btn{ background:#2c6e7f; }
+.download-btn{ background:#27ae60; }
+.view-btn{ background:#8e44ad; }
+.back-btn{ background:#e67e22; }
+.edit-btn{ background:#2980b9; }
+.save-btn{ background:#27ae60; }
+
+/* MENU */
+.menu-container{
+    position:absolute;
+    top:12px;
+    right:12px;
+}
+
+.menu-btn{
+    background:none;
+    border:none;
+    font-size:22px;
+    cursor:pointer;
+    padding:0 5px;
+}
+
+.admin-menu{
+    position:absolute;
+    top:35px;
+    right:0;
+    background:white;
+    border:1px solid #ccc;
+    border-radius:5px;
+    width:100px;
+    opacity:0;
+    visibility:hidden;
+    transition: 0.15s ease-in-out;
+    z-index: 10;
+}
+
+/* Replaced CSS hover with a utility class toggle */
+.admin-menu.show-menu {
+    opacity:1;
+    visibility:visible;
+}
+
+.admin-menu p{
+    padding:10px;
+    color:red;
+    cursor:pointer;
+    margin: 0;
+}
+
+.admin-menu p:hover{
+    background:#f2f2f2;
+}
+
+/* UPLOAD BUTTON */
+.upload-open-btn{
+    width:100%;
+    padding:14px;
+    margin-top:20px;
+    border:none;
+    background:#2c6e7f;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+/* POPUP */
+.upload-popup{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    z-index:500;
+}
+
+.upload-box{
+    width:420px;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+}
+
+.upload-box h2{
+    margin-bottom:15px;
+    color:#2c6e7f;
+}
+
+.upload-box input,
+.upload-box textarea,
+.upload-box select{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    border:1px solid #aaa;
+    border-radius:5px;
+}
+
+.hidden{
+    display:none;
+}
+
+.upload-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.upload-buttons button{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:5px;
+    color:white;
+    cursor:pointer;
+}
+
+.submit-btn{ background:#2c6e7f; }
+.cancel-btn{ background:#c0392b; }
+
+/* NOTES VIEWER */
+#notesViewer{
+    display:none;
+    min-height:100vh;
+    background:white;
+    padding:30px;
+}
+
+.notes-view-box{
+    max-width:900px;
+    margin:auto;
+}
+
+.viewer-top{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.notes-title{
+    color:#2c6e7f;
+    margin-bottom:20px;
+    font-size:32px;
+}
+
+.notes-text{
+    margin-top:20px;
+    line-height:1.8;
+    font-size:18px;
+    white-space:pre-wrap;
+}
+
+#editArea{
+    width:100%;
+    min-height:400px;
+    padding:15px;
+    border:1px solid #bbb;
+    border-radius:8px;
+    display:none;
+}
+
+/* FOOTER */
+footer{
+    background:#1f4f5c;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="loginPage">
+    <div class="login-box">
+        <h2>Student Login</h2>
+        <input type="email" id="loginEmail" placeholder="Enter Email">
+        <input type="password" id="loginPassword" placeholder="Enter Password">
+        <button onclick="loginUser()">Login</button>
+    </div>
+</div>
+
+<div id="mainWebsite" style="display:none;">
+<header>
+    <h1>Study Resource Sharing Platform</h1>
+    <div class="profile-container">
+        <div class="profile-icon">
+            <div class="human-logo"></div>
+        </div>
+        <div class="profile-box">
+            <p onclick="openProfilePage()">Profile</p>
+        </div>
+    </div>
+</header>
+
+<nav>
+    <a href="#">Resources</a>
+</nav>
+
+<main>
+    <section class="search-section">
+        <input type="text" id="searchBox" placeholder="Search notes">
+    </section>
+
+    <section class="box">
+        <div id="resourceList"></div>
+        <button class="upload-open-btn" onclick="openUploadBox()">Upload Notes</button>
+    </section>
+</main>
+
+<footer>
+    <p>Simple project made for students.</p>
+</footer>
+</div>
+
+<div id="profilePage">
+    <div class="profile-page-box">
+        <h2>User Profile</h2>
+        <div class="profile-info">
+            <p><b>Name:</b> <span id="profileName"></span></p>
+            <p><b>Email:</b> <span id="profileEmail"></span></p>
+            <p><b>Password:</b> <span id="profilePassword">********</span></p>
+        </div>
+        <div class="profile-buttons">
+            <button class="change-btn" onclick="openChangePassword()">Change Password</button>
+            <button class="back-profile-btn" onclick="closeProfilePage()">Back</button>
+        </div>
+        <div id="changePasswordSection">
+            <input type="password" id="oldPassword" placeholder="Enter Old Password">
+            <input type="password" id="newPassword" placeholder="Enter New Password">
+            <button class="save-password-btn" onclick="changePassword()" style="width:100%; margin-top:15px; padding:12px; border:none; border-radius:5px; color:white; cursor:pointer;">Save New Password</button>
+        </div>
+        <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    </div>
+</div>
+
+<div id="notesViewer">
+    <div class="notes-view-box">
+        <div class="viewer-top">
+            <button class="back-btn" onclick="closeNotesViewer()">← Back</button>
+            <button class="edit-btn" onclick="editNotes()">Edit</button>
+            <button class="save-btn" id="saveBtn" onclick="saveNotes()" style="display:none;">Save</button>
+        </div>
+        <h1 class="notes-title" id="viewerTitle"></h1>
+        <div class="notes-text" id="viewerContent"></div>
+        <textarea id="editArea"></textarea>
+    </div>
+</div>
+
+<div class="upload-popup" id="uploadPopup">
+    <div class="upload-box">
+        <h2>Upload Resource</h2>
+        <input type="text" id="noteTitle" placeholder="Enter Title">
+        <input type="text" id="noteSubject" placeholder="Enter Subject">
+        <textarea id="noteDescription" placeholder="Enter Description"></textarea>
+        <select id="uploadType" onchange="changeUploadType()">
+            <option value="">Select Upload Type</option>
+            <option value="notes">Notes</option>
+            <option value="link">Link</option>
+            <option value="pdf">PDF/File</option>
+        </select>
+        <textarea id="noteContent" class="hidden" placeholder="Write notes"></textarea>
+        <input type="url" id="noteLink" class="hidden" placeholder="Paste Link">
+        <input type="file" id="noteFile" class="hidden" accept=".pdf,.doc,.docx,.txt">
+        <div class="upload-buttons">
+            <button class="submit-btn" onclick="uploadNote()">Upload</button>
+            <button class="cancel-btn" onclick="closeUploadBox()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* =========================
+   USER DATA STORAGE
+========================= */
+var usersData = {
+    "alex@gmail.com": { password:"1234", name:"Alex", notes:[] },
+    "john@gmail.com": { password:"5678", name:"John", notes:[] }
+};
+
+var currentUserEmail = "";
+var currentUser = null;
+var currentNoteCard = null;
+
+/* =========================
+   LOGIN
+========================= */
+function loginUser(){
+    var email = document.getElementById("loginEmail").value;
+    var password = document.getElementById("loginPassword").value;
+
+    if(email === "" || password === ""){
+        alert("Please enter email and password");
+        return;
+    }
+
+    if(!usersData[email]){
+        usersData[email] = {
+            password:password,
+            name:email.split("@")[0],
+            notes:[]
+        };
+    }
+
+    if(usersData[email].password !== password){
+        alert("Wrong password");
+        return;
+    }
+
+    currentUserEmail = email;
+    currentUser = usersData[email];
+
+    document.getElementById("profileName").innerText = currentUser.name;
+    document.getElementById("profileEmail").innerText = currentUserEmail;
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("mainWebsite").style.display = "block";
+
+    loadUserNotes();
+}
+
+/* =========================
+   LOAD USER NOTES
+========================= */
+function loadUserNotes(){
+    document.getElementById("resourceList").innerHTML = "";
+    currentUser.notes.forEach(function(note){
+        createNoteCard(note);
+    });
+}
+
+/* =========================
+   TOGGLE MENU (Fix implementation)
+========================= */
+function toggleMenu(event, button) {
+    event.stopPropagation(); // Prevents instant closing if clicking elements directly
+    
+    // Close any other open menus first
+    var openMenus = document.querySelectorAll('.admin-menu.show-menu');
+    openMenus.forEach(function(menu) {
+        if(menu !== button.nextElementSibling) {
+            menu.classList.remove('show-menu');
+        }
+    });
+
+    // Toggle current menu
+    var menu = button.nextElementSibling;
+    menu.classList.toggle("show-menu");
+}
+
+// Global click event handler to close the action dropdown menu when clicking away
+document.addEventListener("click", function() {
+    var openMenus = document.querySelectorAll('.admin-menu.show-menu');
+    openMenus.forEach(function(menu) {
+        menu.classList.remove('show-menu');
+    });
+});
+
+/* =========================
+   CREATE CARD
+========================= */
+function createNoteCard(note){
+    var card = document.createElement("div");
+    card.className = "resource-card";
+    var resourceHTML = "";
+
+    if(note.type === "notes"){
+        resourceHTML = `<button class="view-btn">View Notes</button>`;
+    }
+
+    if(note.type === "link"){
+        resourceHTML = `
+            <div class="action-buttons">
+                <a href="${note.link}" target="_blank">
+                    <button class="open-btn">Open Link</button>
+                </a>
+            </div>`;
+    }
+
+    if(note.type === "pdf"){
+        resourceHTML = `
+            <p><b>File:</b> ${note.fileName}</p>
+            <div class="action-buttons">
+                <a href="${note.fileURL}" target="_blank">
+                    <button class="open-btn">Open</button>
+                </a>
+                <a href="${note.fileURL}" download="${note.fileName}">
+                    <button class="download-btn">Download</button>
+                </a>
+            </div>`;
+    }
+
+    card.innerHTML = `
+        <div class="menu-container">
+            <button class="menu-btn" onclick="toggleMenu(event, this)">⋮</button>
+            <div class="admin-menu">
+                <p onclick="removeCard(event, this)">Remove</p>
+            </div>
+        </div>
+        <h3>${note.title}</h3>
+        <p><b>Subject:</b> ${note.subject}</p>
+        <p>${note.description}</p>
+        ${resourceHTML}
+    `;
+
+    document.getElementById("resourceList").appendChild(card);
+
+    var viewButton = card.querySelector(".view-btn");
+    if(viewButton){
+        viewButton.onclick = function(){
+            openNotesViewer(note.title, note.content, card);
+        };
+    }
+}
+
+/* =========================
+   PROFILE PAGE
+========================= */
+function openProfilePage(){
+    document.getElementById("mainWebsite").style.display = "none";
+    document.getElementById("profilePage").style.display = "block";
+}
+
+function closeProfilePage(){
+    document.getElementById("profilePage").style.display = "none";
+    document.getElementById("mainWebsite").style.display = "block";
+}
+
+/* =========================
+   CHANGE PASSWORD
+========================= */
+function openChangePassword(){
+    var section = document.getElementById("changePasswordSection");
+    section.style.display = (section.style.display === "block") ? "none" : "block";
+}
+
+function changePassword(){
+    var oldPassword = document.getElementById("oldPassword").value;
+    var newPassword = document.getElementById("newPassword").value;
+
+    if(oldPassword !== currentUser.password){
+        alert("Old password incorrect");
+        return;
+    }
+
+    currentUser.password = newPassword;
+    alert("Password Changed Successfully");
+
+    document.getElementById("oldPassword").value = "";
+    document.getElementById("newPassword").value = "";
+    document.getElementById("changePasswordSection").style.display = "none";
+}
+
+/* =========================
+   LOGOUT
+========================= */
+function logoutUser(){
+    document.getElementById("profilePage").style.display = "none";
+    document.getElementById("mainWebsite").style.display = "none";
+    document.getElementById("loginPage").style.display = "flex";
+    document.getElementById("loginEmail").value = "";
+    document.getElementById("loginPassword").value = "";
+    currentUser = null;
+    currentUserEmail = "";
+}
+
+/* =========================
+   SEARCH
+========================= */
+document.getElementById("searchBox").addEventListener("keyup", function(){
+    var text = this.value.toLowerCase();
+    var cards = document.getElementsByClassName("resource-card");
+
+    for(var i=0; i<cards.length; i++){
+        var content = cards[i].innerText.toLowerCase();
+        cards[i].style.display = (content.indexOf(text) > -1) ? "block" : "none";
+    }
+});
+
+/* =========================
+   REMOVE CARD
+========================= */
+function removeCard(event, button){
+    event.stopPropagation(); // Stop propagation to avoid unexpected click handling triggers
+    
+    var card = button.closest(".resource-card");
+    var title = card.querySelector("h3").innerText;
+
+    currentUser.notes = currentUser.notes.filter(function(note){
+        return note.title !== title;
+    });
+
+    card.remove();
+}
+
+/* =========================
+   POPUP
+========================= */
+function openUploadBox(){
+    document.getElementById("uploadPopup").style.display = "flex";
+}
+
+function closeUploadBox(){
+    document.getElementById("uploadPopup").style.display = "none";
+}
+
+/* =========================
+   CHANGE TYPE
+========================= */
+function changeUploadType(){
+    var type = document.getElementById("uploadType").value;
+
+    document.getElementById("noteContent").classList.add("hidden");
+    document.getElementById("noteLink").classList.add("hidden");
+    document.getElementById("noteFile").classList.add("hidden");
+
+    if(type === "notes") document.getElementById("noteContent").classList.remove("hidden");
+    if(type === "link") document.getElementById("noteLink").classList.remove("hidden");
+    if(type === "pdf") document.getElementById("noteFile").classList.remove("hidden");
+}
+
+/* =========================
+   NOTES VIEWER
+========================= */
+function openNotesViewer(title,content,card){
+    currentNoteCard = card;
+    document.getElementById("mainWebsite").style.display = "none";
+    document.getElementById("notesViewer").style.display = "block";
+    document.getElementById("viewerTitle").innerText = title;
+    document.getElementById("viewerContent").innerText = content;
+    document.getElementById("editArea").value = content;
+}
+
+function closeNotesViewer(){
+    document.getElementById("notesViewer").style.display = "none";
+    document.getElementById("mainWebsite").style.display = "block";
+}
+
+function editNotes(){
+    document.getElementById("viewerContent").style.display = "none";
+    document.getElementById("editArea").style.display = "block";
+    document.getElementById("saveBtn").style.display = "inline-block";
+}
+
+function saveNotes(){
+    var updatedText = document.getElementById("editArea").value;
+    document.getElementById("viewerContent").innerText = updatedText;
+    document.getElementById("viewerContent").style.display = "block";
+    document.getElementById("editArea").style.display = "none";
+    document.getElementById("saveBtn").style.display = "none";
+    alert("Notes Updated");
+}
+
+/* =========================
+   UPLOAD NOTE
+========================= */
+function uploadNote(){
+    var title = document.getElementById("noteTitle").value;
+    var subject = document.getElementById("noteSubject").value;
+    var description = document.getElementById("noteDescription").value;
+    var type = document.getElementById("uploadType").value;
+    var content = document.getElementById("noteContent").value;
+    var link = document.getElementById("noteLink").value;
+    var file = document.getElementById("noteFile").files[0];
+
+    if(title === "" || subject === ""){
+        alert("Enter title and subject");
+        return;
+    }
+
+    var fileURL = "";
+    var fileName = "";
+
+    if(file){
+        fileURL = URL.createObjectURL(file);
+        fileName = file.name;
+    }
+
+    var noteData = {
+        title:title,
+        subject:subject,
+        description:description,
+        type:type,
+        content:content,
+        link:link,
+        fileURL:fileURL,
+        fileName:fileName
+    };
+
+    currentUser.notes.push(noteData);
+    createNoteCard(noteData);
+    closeUploadBox();
+
+    document.getElementById("noteTitle").value = "";
+    document.getElementById("noteSubject").value = "";
+    document.getElementById("noteDescription").value = "";
+    document.getElementById("noteContent").value = "";
+    document.getElementById("noteLink").value = "";
+    document.getElementById("noteFile").value = "";
+    document.getElementById("uploadType").value = "";
+
+    changeUploadType();
+    alert("Uploaded Successfully");
+}
+</script>
+
+</body>
+</html>
